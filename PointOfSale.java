@@ -15,7 +15,7 @@ import java.sql.*;
 
 public class PointOfSale implements Runnable, SerialPortEventListener {
 	
-	private static CommPortIdentifier myCommPortIdentifier;
+    private static CommPortIdentifier myCommPortIdentifier;
     private static String comPort;    
 
     private Connection myConnection;
@@ -32,25 +32,25 @@ public class PointOfSale implements Runnable, SerialPortEventListener {
     private ArrayList<String> Recipe = new ArrayList<String>();
     private Graphics g;
     
-    public PointOfSale (){
-    	
+    public PointOfSale ()
+    {	
     	// port init
     	 try {
-			mySerialPort = (SerialPort) myCommPortIdentifier.open("ComControl", 2000);
+		mySerialPort = (SerialPort) myCommPortIdentifier.open("ComControl", 2000);
 		} catch (PortInUseException e) {
 			e.printStackTrace();
 		}
     	 
     	//get code
     	 try {
-			myInputStream = mySerialPort.getInputStream();
+		myInputStream = mySerialPort.getInputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
     	 
     	 //event listener
     	 try {
-			mySerialPort.addEventListener(this);
+		mySerialPort.addEventListener(this);
 		} catch (TooManyListenersException e) {
 			e.printStackTrace();
 		}
@@ -58,12 +58,12 @@ public class PointOfSale implements Runnable, SerialPortEventListener {
     	 
     	 // port properties
     	 try {
-			mySerialPort.setSerialPortParams(9600,
-			         SerialPort.DATABITS_8,
-			         SerialPort.STOPBITS_1,
-			         SerialPort.PARITY_NONE);
-					 mySerialPort.setDTR(false);
-			         mySerialPort.setRTS(false);
+		mySerialPort.setSerialPortParams(9600,
+			SerialPort.DATABITS_8,
+			SerialPort.STOPBITS_1,
+			SerialPort.PARITY_NONE);
+			mySerialPort.setDTR(false);
+			mySerialPort.setRTS(false);
 		} catch (UnsupportedCommOperationException e) {
 			e.printStackTrace();
 		}
@@ -74,26 +74,29 @@ public class PointOfSale implements Runnable, SerialPortEventListener {
              
     }
     
-    public void run() {
+    public void run() 
+    {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {}
     }
     
     // on scan
-    public void serialEvent(SerialPortEvent event) {
-
-        if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
-
+    public void serialEvent(SerialPortEvent event)
+    {
+        if (event.getEventType() == SerialPortEvent.DATA_AVAILABLE) 
+	{
             StringBuilder myStringBuilder = new StringBuilder();
             int c;
             try {
 
                 // append the scanned data onto a string builder
-                while ((c = myInputStream.read()) != 10){
+                while ((c = myInputStream.read()) != 10)
+		{
                    if (c != 13)  myStringBuilder.append((char) c);
                 }               
-                if (myStringBuilder.charAt(0) == 'e') {
+                if (myStringBuilder.charAt(0) == 'e') 
+		{
                 	g.setFont(new Font("TimesRoman", Font.PLAIN, 10)); 
                 	int x = 5;
                 	int y = 5;
@@ -109,9 +112,9 @@ public class PointOfSale implements Runnable, SerialPortEventListener {
                 	Graphics2D g2 = (Graphics2D) g;
                 	PrinterJob pjob = PrinterJob.getPrinterJob();
                 	PageFormat pf = pjob.defaultPage();
-                    PageFormat pf2 = pjob.pageDialog(pf);
+                        PageFormat pf2 = pjob.pageDialog(pf);
                     
-                    //printing
+                   	//printing
                 	pjob.setPrintable( (Printable) g2, pf2 );
                 	if (pjob.printDialog()){
                 	    try {
@@ -140,10 +143,10 @@ public class PointOfSale implements Runnable, SerialPortEventListener {
 		                final ResultSet resultSet = st.executeQuery("SELECT Name,Price FROM Products WHERE Products.Code = '" + BarCode + "'");
 		                
 		                //test if barcode exist
-		                if(resultSet.next()) {
+		                if(resultSet.next()) 
+				{
 		                	System.out.println(resultSet.getString(1) + "," + resultSet.getString(2) );
-		                	Recipe.add(resultSet.getString(1) + "  :  " + resultSet.getString(2));
-		                    
+		                	Recipe.add(resultSet.getString(1) + "  :  " + resultSet.getString(2));          
 		                }
 		                else{
 		                	System.out.println("Product not found");
@@ -162,8 +165,9 @@ public class PointOfSale implements Runnable, SerialPortEventListener {
         }
     }
 
-	public static void main(String[] args) {
-		 // read properties
+	public static void main(String[] args) 
+	{
+	 // read properties
         Properties myProperties = new Properties();
         try {
             myProperties.load(new FileInputStream("config.properties"));
